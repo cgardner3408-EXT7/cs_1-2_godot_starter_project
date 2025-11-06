@@ -1,6 +1,7 @@
 extends CharacterBody2D
 @onready var _animation_player: AnimatedSprite2D = $AnimatedSprite2D
 var projectile_original = preload("res://scenes/projectile.tscn")
+@onready var hit_box: Area2D = $hit_box
 
 var xSpeed = 300.0
 var xDirection = 0
@@ -9,6 +10,10 @@ var ySpeed = 300.0
 var yDirection = 0
 var coins = 0
 @export var offset : Vector2 = Vector2(0, -25)
+var is_attacking = false
+var attack_timer = .10
+var enemy = null
+
 
 # TODO: Add health system variables
 var maxHealth = 10
@@ -38,12 +43,16 @@ func _physics_process(_delta):
 	# TODO: Update facing direction based on movement
 	if xDirection > 0:
 		facing = "right"
+		hit_box.position = Vector2(30, 0)
 	elif xDirection < 0:
 		facing = "left"
+		hit_box.position = Vector2(-30, 0)
 	elif yDirection < 0:
 		facing = "up"
+		hit_box.position = Vector2(0,-50)
 	elif yDirection > 0:
 		facing = "down"
+		hit_box.position = Vector2(0,30)
 	
 	if Input.is_action_just_pressed("ui_select"):
 		shoot()
@@ -54,11 +63,21 @@ func _physics_process(_delta):
 	
 	# This is a special Godot function that makes the movement happen
 	move_and_slide()
+	
+	
+	
+	if Input.is_action_just_pressed("ui_accept"):
+		is_attacking = true
+		_animation_player.play("attack_" + facing)
+		if attack_timer <0:
+			is_attacking = true
+			attack_timer =.67
+
 
 # TODO: Create animation function (add this outside of _physics_process)
 func update_animation():
 	# TODO: Set the animation based on the facing direction
-	if velocity.is_zero_approx():
+	if velocity.is_zero_approx():     
 		_animation_player.play("idle_" + facing)
 	# This combines "idle_" with whatever direction we're facing
 		pass
@@ -68,7 +87,7 @@ func update_animation():
 		pass
 		
 	
-
+#  101 reasons why this class isnt the best for learning, #1 I cant even write my brain is fried ngl 
 
 # TODO: Create health change function for interactions
 func change_health(_amount:int):
@@ -100,4 +119,15 @@ func shoot():
 	# TODO: Add projectile to the game world
 	get_tree().get_root().add_child(projectile_clone)
 
+	pass
+
+
+
+func _on_area_2d_body_entered(body: Node2D) -> void:
+	if body.is_in_group("enemy"):
+		if is_attacking == true:
+			pass
+
+
+func _on_area_2d_exited(body: Node2D) -> void:
 	pass

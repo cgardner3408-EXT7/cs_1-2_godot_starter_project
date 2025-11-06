@@ -2,8 +2,6 @@ extends Area2D
 var direction = position
 var speed = 300
 
-var direction
-var speed = 300
 
 func _ready() -> void:
 	body_entered.connect(_on_body_entered)

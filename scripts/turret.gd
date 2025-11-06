@@ -44,7 +44,7 @@ func _on_area_2d_body_exited(body: Node2D) -> void:
 
 
 
-func shoot(body):
+func shoot():
 	# TODO: Create a new projectile instance
 	var projectile_clone = projectile_original.instantiate()
 	
@@ -52,10 +52,9 @@ func shoot(body):
 	projectile_clone.global_position = position
 	
 	# TODO: Set projectile direction using facing variable
-	projectile_clone.set_direction(body.position)
+	projectile_clone.set_direction(player.posiion)
 	
 	# TODO: Add projectile to the game world
 	get_tree().get_root().add_child(projectile_clone)
 
 	pass
-
